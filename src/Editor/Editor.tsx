@@ -9,6 +9,7 @@ import { AutoLinkPlugin } from "@lexical/react/LexicalAutoLinkPlugin";
 import { AutoLinkNode } from "@lexical/link";
 
 import { StateLogger } from "./StateLogger";
+import { StockMentionNode, StockMentionPlugin } from "./StockMentionPlugin";
 
 const URL_MATCHER =
   /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
@@ -34,9 +35,10 @@ export function Editor() {
   const initialConfig: InitialConfigType = {
     namespace: "LexicalEditor",
     onError: console.error,
-    nodes: [AutoLinkNode],
+    nodes: [AutoLinkNode, StockMentionNode],
     theme: {
       link: "inline-block text-blue-500 underline bg-yellow-200 px-1 rounded",
+      "stock-mention": "inline-block bg-blue-200 px-1 rounded",
     },
   };
 
@@ -50,6 +52,7 @@ export function Editor() {
         ErrorBoundary={LexicalErrorBoundary}
       />
       <AutoLinkPlugin matchers={MATCHERS} />
+      <StockMentionPlugin />
       <StateLogger />
     </LexicalComposer>
   );
