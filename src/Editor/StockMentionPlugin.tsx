@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import {
-  $createTextNode,
   EditorConfig,
   LexicalNode,
   NodeKey,
@@ -46,26 +45,9 @@ export function StockMentionPlugin() {
     }
 
     if (query && query.trim().length > 1) {
-      search(query).finally();
+      void search(query);
     }
   }, [query]);
-
-  const shouldSearchStocks = useCallback((text: string): QueryMatch | null => {
-    const match = /@(\w+)$/.exec(text);
-    if (!match) return null;
-
-    const {
-      0: replaceableString,
-      1: matchingString,
-      index: leadOffset,
-    } = match;
-
-    return {
-      leadOffset,
-      matchingString,
-      replaceableString,
-    };
-  }, []);
 
   const handleStockSelection = useCallback(
     (
@@ -119,6 +101,19 @@ export function StockMentionPlugin() {
       triggerFn={shouldSearchStocks}
     />
   );
+}
+
+function shouldSearchStocks(text: string): QueryMatch | null {
+  const match = /@(\w+)$/.exec(text);
+  if (!match) return null;
+
+  const { 0: replaceableString, 1: matchingString, index: leadOffset } = match;
+
+  return {
+    leadOffset,
+    matchingString,
+    replaceableString,
+  };
 }
 
 export class StockMentionNode extends TextNode {
