@@ -39,7 +39,11 @@ export function StockMentionPlugin() {
       closeMenu: () => void
     ) => {
       editor.update(() => {
-        const node = $createStockMentionNode(option.ticker, option.name);
+        const node = $createStockMentionNode(
+          option.ticker,
+          option.name,
+          option.name
+        );
         if (textNodeContainingQuery) {
           textNodeContainingQuery.replace(node);
         }

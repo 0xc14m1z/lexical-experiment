@@ -18,20 +18,25 @@ export class StockMentionNode extends TextNode {
     return "stockMention" as const;
   }
 
-  constructor(ticker: string, name: string, key?: NodeKey) {
-    super(name, key);
+  constructor(ticker: string, name: string, label: string, key?: NodeKey) {
+    super(label, key);
     this.__ticker = ticker;
     this.__name = name;
   }
 
   static clone(node: StockMentionNode): StockMentionNode {
-    return new StockMentionNode(node.__ticker, node.__name, node.__key);
+    return new StockMentionNode(
+      node.__ticker,
+      node.__name,
+      node.__text,
+      node.__key
+    );
   }
 
   createDOM(config: EditorConfig): HTMLElement {
     const dom = super.createDOM(config);
     dom.className = config.theme[StockMentionNode.getType()];
-    dom.textContent = this.__name;
+    dom.textContent = this.__text;
     return dom;
   }
 
@@ -46,7 +51,7 @@ export class StockMentionNode extends TextNode {
   }
 
   static importJSON(json: SerializedStockMentionNode): StockMentionNode {
-    const node = $createStockMentionNode(json.ticker, json.name);
+    const node = $createStockMentionNode(json.ticker, json.name, json.text);
     node.setFormat(node.format);
     node.setStyle(node.style);
     return node;
@@ -57,7 +62,7 @@ export class StockMentionNode extends TextNode {
     element.setAttribute("data-type", StockMentionNode.getType());
     element.setAttribute("data-ticker", this.__ticker);
     element.setAttribute("data-name", this.__name);
-    element.textContent = this.__name;
+    element.textContent = this.__text;
     return { element };
   }
 
@@ -73,7 +78,11 @@ export class StockMentionNode extends TextNode {
           conversion(element: HTMLElement): DOMConversionOutput {
             const ticker = element.getAttribute("data-ticker")!;
             const name = element.getAttribute("data-name")!;
-            const node = $createStockMentionNode(ticker, name);
+            const node = $createStockMentionNode(
+              ticker,
+              name,
+              element.textContent ?? name
+            );
 
             return {
               node,
