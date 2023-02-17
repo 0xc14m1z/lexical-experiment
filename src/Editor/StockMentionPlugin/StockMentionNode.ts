@@ -1,10 +1,18 @@
-import { EditorConfig, NodeKey, TextNode } from "lexical";
+import {
+  DOMConversion,
+  DOMConversionMap,
+  DOMConversionOutput,
+  DOMExportOutput,
+  EditorConfig,
+  NodeKey,
+  TextNode,
+} from "lexical";
 import { SerializedStockMentionNode } from "./SerializedStockMentionNode";
 import { $createStockMentionNode } from "./$createStockMentionNode";
 
 export class StockMentionNode extends TextNode {
-  __ticker!: string;
-  __name!: string;
+  __ticker: string;
+  __name: string;
 
   static getType() {
     return "stockMention" as const;
@@ -14,7 +22,6 @@ export class StockMentionNode extends TextNode {
     super(name, key);
     this.__ticker = ticker;
     this.__name = name;
-    this.setMode("token");
   }
 
   static clone(node: StockMentionNode): StockMentionNode {
@@ -50,6 +57,23 @@ export class StockMentionNode extends TextNode {
     return dom;
   }
 
+  updateDOM(
+    prevNode: StockMentionNode,
+    dom: HTMLElement,
+    config: EditorConfig
+  ): boolean {
+    if (
+      prevNode.getTicker() === this.getTicker() &&
+      prevNode.getName() === this.getName()
+    ) {
+      return false;
+    }
+
+    const updated = super.updateDOM(prevNode, dom, config);
+    console.log("updateDOM", { prevNode, dom, config, this: this });
+    return updated;
+  }
+
   static importJSON(json: SerializedStockMentionNode): StockMentionNode {
     const node = $createStockMentionNode(json.ticker, json.name);
     node.setTextContent(node.text);
@@ -70,7 +94,35 @@ export class StockMentionNode extends TextNode {
     };
   }
 
-  isTextEntity(): boolean {
-    return true;
+  exportDOM(): DOMExportOutput {
+    const element = document.createElement("span");
+    element.setAttribute("data-type", StockMentionNode.getType());
+    element.setAttribute("data-ticker", this.__ticker);
+    element.setAttribute("data-name", this.__name);
+    element.textContent = this.__name;
+    return { element };
+  }
+
+  static importDOM(): DOMConversionMap | null {
+    return {
+      span(node: HTMLElement): DOMConversion | null {
+        if (!node.hasAttribute("data-type")) return null;
+        if (node.getAttribute("data-type") !== StockMentionNode.getType())
+          return null;
+
+        return {
+          priority: 1,
+          conversion(element: HTMLElement): DOMConversionOutput {
+            const ticker = element.getAttribute("data-ticker")!;
+            const name = element.getAttribute("data-name")!;
+            const node = $createStockMentionNode(ticker, name);
+
+            return {
+              node,
+            };
+          },
+        };
+      },
+    };
   }
 }

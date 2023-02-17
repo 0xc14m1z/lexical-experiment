@@ -10,6 +10,8 @@ import { AutoLinkNode } from "@lexical/link";
 
 import { StateLogger } from "./StateLogger";
 import { StockMentionPlugin, StockMentionNode } from "./StockMentionPlugin";
+import { HTMLExporter } from "./HTMLExporter";
+import { HTMLImporter } from "./HTMLImporter";
 
 const URL_MATCHER =
   /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
@@ -52,8 +54,12 @@ export function Editor() {
         ErrorBoundary={LexicalErrorBoundary}
       />
       <AutoLinkPlugin matchers={MATCHERS} />
+
       <StockMentionPlugin />
+
       <StateLogger />
+      <HTMLExporter />
+      <HTMLImporter />
     </LexicalComposer>
   );
 }

@@ -107,7 +107,7 @@
   dependencies:
     "@lexical/utils" "0.8.0"
 
-"@lexical/html@0.8.0":
+"@lexical/html@0.8.0", "@lexical/html@^0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@lexical/html/-/html-0.8.0.tgz#b783e3245462371b47321291406ccdb64e1bae50"
   integrity sha512-dzSlaE4/N9z/0Mj7DapYQY6hD81tN2eYLvTegOcXlAKMjL0JKxd6uIZJg0qdBvGISPHxI14nUCY3ACc0hTbv9Q==

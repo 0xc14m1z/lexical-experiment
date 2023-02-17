@@ -4,5 +4,7 @@ export function $createStockMentionNode(
   ticker: string,
   name: string
 ): StockMentionNode {
-  return new StockMentionNode(ticker, name);
+  const node = new StockMentionNode(ticker, name);
+  node.setMode("token").setDetail("directionless");
+  return node;
 }
