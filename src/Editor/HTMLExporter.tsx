@@ -31,7 +31,9 @@ export function HTMLExporter() {
   return (
     <section className="mt-8">
       <h2 className="text-normal font-bold">Exported HTML:</h2>
-      <pre className="bg-slate-300 p-4 border rounded text-sm">{state}</pre>
+      <pre className="bg-slate-300 p-4 border rounded text-sm whitespace-normal break-words">
+        {state}
+      </pre>
       <footer className="mt-2">
         <button
           onClick={copyHTML}

@@ -20,6 +20,7 @@ export function HTMLImporter() {
       const dom = parser.parseFromString(html, "text/html");
       const nodes = $generateNodesFromDOM(editor, dom);
       $getRoot().select();
+      $getRoot().clear();
       $insertNodes(nodes);
     });
   };

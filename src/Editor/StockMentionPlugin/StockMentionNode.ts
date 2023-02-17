@@ -25,29 +25,7 @@ export class StockMentionNode extends TextNode {
   }
 
   static clone(node: StockMentionNode): StockMentionNode {
-    return new StockMentionNode(node.__ticker, node.__ticker, node.__key);
-  }
-
-  getTicker(): string {
-    const self = this.getLatest();
-    return self.__ticker;
-  }
-
-  setTicker(newTicker: string): this {
-    const self = this.getWritable();
-    self.__ticker = newTicker;
-    return this;
-  }
-
-  getName(): string {
-    const self = this.getLatest();
-    return self.__name;
-  }
-
-  setName(newName: string): this {
-    const self = this.getWritable();
-    self.__name = newName;
-    return this;
+    return new StockMentionNode(node.__ticker, node.__name, node.__key);
   }
 
   createDOM(config: EditorConfig): HTMLElement {
@@ -55,33 +33,6 @@ export class StockMentionNode extends TextNode {
     dom.className = config.theme[StockMentionNode.getType()];
     dom.textContent = this.__name;
     return dom;
-  }
-
-  updateDOM(
-    prevNode: StockMentionNode,
-    dom: HTMLElement,
-    config: EditorConfig
-  ): boolean {
-    if (
-      prevNode.getTicker() === this.getTicker() &&
-      prevNode.getName() === this.getName()
-    ) {
-      return false;
-    }
-
-    const updated = super.updateDOM(prevNode, dom, config);
-    console.log("updateDOM", { prevNode, dom, config, this: this });
-    return updated;
-  }
-
-  static importJSON(json: SerializedStockMentionNode): StockMentionNode {
-    const node = $createStockMentionNode(json.ticker, json.name);
-    node.setTextContent(node.text);
-    node.setFormat(node.format);
-    node.setDetail(node.detail);
-    node.setMode(node.mode);
-    node.setStyle(node.style);
-    return node;
   }
 
   exportJSON(): SerializedStockMentionNode {
@@ -92,6 +43,13 @@ export class StockMentionNode extends TextNode {
       ticker: this.__ticker,
       name: this.__name,
     };
+  }
+
+  static importJSON(json: SerializedStockMentionNode): StockMentionNode {
+    const node = $createStockMentionNode(json.ticker, json.name);
+    node.setFormat(node.format);
+    node.setStyle(node.style);
+    return node;
   }
 
   exportDOM(): DOMExportOutput {
