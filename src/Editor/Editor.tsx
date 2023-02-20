@@ -46,13 +46,14 @@ export function Editor() {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <PlainTextPlugin
-        contentEditable={
-          <ContentEditable className="bg-white border rounded p-4" />
-        }
-        placeholder={<div>Write, come on!</div>}
-        ErrorBoundary={LexicalErrorBoundary}
-      />
+      <div className="bg-white border rounded p-4">
+        <PlainTextPlugin
+          contentEditable={<ContentEditable />}
+          placeholder={<div>Write, come on!</div>}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      </div>
+
       <AutoLinkPlugin matchers={MATCHERS} />
 
       <StockMentionPlugin />

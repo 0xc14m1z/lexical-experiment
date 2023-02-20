@@ -13,7 +13,6 @@ import { $createStockMentionNode } from "./$createStockMentionNode";
 import { useStockSearch } from "./useStockSearch";
 import { Stock } from "./Stock";
 
-// inspire yourself here: https://codesandbox.io/s/objective-diffie-o037k3?file=/src/plugins/MentionsPlugin.tsx:6746-6791
 export function StockMentionPlugin() {
   const [editor] = useLexicalComposerContext();
 
@@ -47,7 +46,7 @@ export function StockMentionPlugin() {
         if (textNodeContainingQuery) {
           textNodeContainingQuery.replace(node);
         }
-        node.select();
+        // node.select();
         closeMenu();
       });
     },
