@@ -43,10 +43,12 @@ export function StockMentionPlugin() {
           option.name,
           option.name
         );
+
         if (textNodeContainingQuery) {
           textNodeContainingQuery.replace(node);
         }
-        // node.select();
+
+        node.select();
         closeMenu();
       });
     },
@@ -56,7 +58,7 @@ export function StockMentionPlugin() {
   return (
     <LexicalTypeaheadMenuPlugin
       onQueryChange={setQuery}
-      menuRenderFn={(anchorElementRef, itemProps, matchingString) => {
+      menuRenderFn={(anchorElementRef, itemProps) => {
         if (results.length === 0) return null;
         return (
           <ul className="bg-white rounded shadow py-2">

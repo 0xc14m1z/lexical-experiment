@@ -5,39 +5,19 @@ import {
 import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
-import { AutoLinkPlugin } from "@lexical/react/LexicalAutoLinkPlugin";
-import { AutoLinkNode } from "@lexical/link";
 
 import { StateLogger } from "./StateLogger";
 import { StockMentionPlugin, StockMentionNode } from "./StockMentionPlugin";
+import { ImageNode, ImagePlugin } from "./ImagePlugin";
+
 import { HTMLExporter } from "./HTMLExporter";
 import { HTMLImporter } from "./HTMLImporter";
-
-const URL_MATCHER =
-  /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
-
-const MATCHERS = [
-  (text: string) => {
-    const match = URL_MATCHER.exec(text);
-    if (match === null) {
-      return null;
-    }
-    const fullMatch = match[0];
-    return {
-      index: match.index,
-      length: fullMatch.length,
-      text: fullMatch,
-      url: fullMatch.startsWith("http") ? fullMatch : `https://${fullMatch}`,
-      // attributes: { rel: 'noopener', target: '_blank' }, // Optional link attributes
-    };
-  },
-];
 
 export function Editor() {
   const initialConfig: InitialConfigType = {
     namespace: "LexicalEditor",
     onError: console.error,
-    nodes: [AutoLinkNode, StockMentionNode],
+    nodes: [StockMentionNode, ImageNode],
     theme: {
       link: "inline-block text-blue-500 underline bg-yellow-200 px-1 rounded",
       stockMention: "inline-block bg-blue-200 px-1 rounded",
@@ -46,17 +26,16 @@ export function Editor() {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="bg-white border rounded p-4">
+      <div className="bg-white border border-2 rounded p-4 focus-within:border-blue-500">
         <PlainTextPlugin
-          contentEditable={<ContentEditable />}
-          placeholder={<div>Write, come on!</div>}
+          contentEditable={<ContentEditable className="outline-none" />}
+          placeholder={<></>}
           ErrorBoundary={LexicalErrorBoundary}
         />
       </div>
 
-      <AutoLinkPlugin matchers={MATCHERS} />
-
       <StockMentionPlugin />
+      <ImagePlugin />
 
       <StateLogger />
       <HTMLExporter />
