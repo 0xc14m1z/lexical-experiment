@@ -19,8 +19,17 @@ export function Editor() {
     onError: console.error,
     nodes: [StockMentionNode, ImageNode],
     theme: {
-      link: "inline-block text-blue-500 underline bg-yellow-200 px-1 rounded",
       stockMention: "inline-block bg-blue-200 px-1 rounded",
+      customImage: {
+        container: {
+          idle: "rounded",
+          edit: "p-8 border border-2",
+          selected: "border-blue-300",
+        },
+        image: {
+          idle: "max-h-96 mx-auto",
+        },
+      },
     },
   };
 
