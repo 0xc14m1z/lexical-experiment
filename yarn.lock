@@ -208,7 +208,7 @@
   resolved "https://registry.yarnpkg.com/@lexical/text/-/text-0.8.0.tgz#64a24147b051353c82115ac2cf1227660519d314"
   integrity sha512-QszpHqWZ6dQvPIxZmk7/8gQplyKm4KjK1eUtP9FhGoNfsUaR8P9mcxvuaMEXXu+QZ8GTTu8zQhuZTK6dx8oMRg==
 
-"@lexical/utils@0.8.0":
+"@lexical/utils@0.8.0", "@lexical/utils@^0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@lexical/utils/-/utils-0.8.0.tgz#521f85d1a06d6a06cc395e5f576cf9665eb527d4"
   integrity sha512-mxbb4A2565QLEIGxzRO8HKXDqbdi1vesAPXWeAxqU7sMnX6aS5/HwIkjRJcEKqr0GnCIwamZvr/WMtwM8k0IDQ==
