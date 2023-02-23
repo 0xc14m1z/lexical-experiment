@@ -18,11 +18,15 @@ import {
   $insertDataTransferForRichText,
   copyToClipboard__EXPERIMENTAL,
 } from "@lexical/clipboard";
-import { UpdateListener } from "lexical/LexicalEditor";
+import { InitialConfigType } from "@lexical/react/LexicalComposer";
 
 type Selection = RangeSelection | GridSelection | NodeSelection | null;
 
-export function StateLogger() {
+interface Props {
+  editorConfig: InitialConfigType;
+}
+
+export function StateLogger({ editorConfig }: Props) {
   const [editor] = useLexicalComposerContext();
   const [serializedState, setSerializedState] = useState<string>("");
   const [serializedSelection, setSerializedSelection] = useState<string>("");
@@ -31,7 +35,7 @@ export function StateLogger() {
   function trackState() {
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
-        const jsonState = editorState.toJSON();
+        const jsonState = editorState.toJSON().root;
         const serializedState = JSON.stringify(jsonState, null, 2);
         setSerializedState(serializedState);
       });
@@ -57,30 +61,16 @@ export function StateLogger() {
           editor,
           event instanceof ClipboardEvent ? event : null
         ).then(() => {
-          if (!event.clipboardData) return;
-
-          const clipboardEditor = createEditor(editor._config);
-          const root = document.createElement("div");
-          clipboardEditor.setRootElement(root);
-          let removeListener = () => {};
-          const storeClipboard: UpdateListener = ({ editorState }) => {
-            const jsonClipboard = editorState.toJSON();
-            const serializedClipboard = JSON.stringify(jsonClipboard, null, 2);
-            setSerializedClipboard(serializedClipboard);
-
-            removeListener();
-          };
-
-          removeListener =
-            clipboardEditor.registerUpdateListener(storeClipboard);
-
-          clipboardEditor.update(() => {
-            $insertDataTransferForRichText(
-              event.clipboardData!,
-              $createRangeSelection(),
-              clipboardEditor
-            );
-          });
+          clipboardToJSON(editorConfig, event.clipboardData).then(
+            (jsonClipboard) => {
+              const serializedClipboard = JSON.stringify(
+                jsonClipboard,
+                null,
+                2
+              );
+              setSerializedClipboard(serializedClipboard);
+            }
+          );
         });
         return true;
       },
@@ -146,4 +136,39 @@ function selectionToJSON(selection: Selection): any {
   }
 
   return {};
+}
+
+function clipboardToJSON(
+  editorConfig: InitialConfigType,
+  dataTransfer: DataTransfer | null
+): Promise<any> {
+  return new Promise((resolve) => {
+    if (!dataTransfer) return resolve(null);
+
+    // create a temporary editor where to "dump" the copied piece of state
+    // that is going to be used just for visualization
+    const clipboardEditor = createEditor({
+      namespace: editorConfig.namespace,
+      nodes: editorConfig.nodes,
+      theme: editorConfig.theme,
+    });
+    const root = document.createElement("div");
+    clipboardEditor.setRootElement(root);
+
+    const removeListener =
+      clipboardEditor.registerUpdateListener(storeClipboard);
+
+    function storeClipboard({ editorState }: { editorState: EditorState }) {
+      removeListener();
+      resolve(editorState.toJSON().root);
+    }
+
+    clipboardEditor.update(() => {
+      $insertDataTransferForRichText(
+        dataTransfer,
+        $createRangeSelection(),
+        clipboardEditor
+      );
+    });
+  });
 }

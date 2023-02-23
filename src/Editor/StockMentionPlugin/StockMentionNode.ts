@@ -56,7 +56,7 @@ export class StockMentionNode extends TextNode {
   static importJSON(json: SerializedStockMentionNode): StockMentionNode {
     const node = $createStockMentionNode(json.ticker, json.name, json.text);
     node.setFormat(node.format);
-    node.setStyle(node.style);
+    node.setStyle(node.style ?? "");
     return node;
   }
 

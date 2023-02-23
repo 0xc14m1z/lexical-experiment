@@ -46,7 +46,7 @@ export function Editor() {
       <StockMentionPlugin />
       <ImagePlugin />
 
-      <StateLogger />
+      <StateLogger editorConfig={initialConfig} />
       <HTMLExporter />
       <HTMLImporter />
     </LexicalComposer>
