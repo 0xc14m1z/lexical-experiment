@@ -1,8 +1,18 @@
 import { useEffect } from "react";
 import classNames from "classnames";
 import {
+  $createNodeSelection,
+  $createRangeSelection,
+  $createTextNode,
   $getNodeByKey,
+  $getSelection,
+  $isDecoratorNode,
+  $isElementNode,
+  $isTextNode,
+  $setSelection,
   COMMAND_PRIORITY_EDITOR,
+  COMMAND_PRIORITY_HIGH,
+  COMMAND_PRIORITY_LOW,
   EditorConfig,
   KEY_ARROW_LEFT_COMMAND,
   KEY_BACKSPACE_COMMAND,
@@ -12,6 +22,8 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection";
 import { mergeRegister } from "@lexical/utils";
 import useLexicalEditable from "@lexical/react/useLexicalEditable";
+import { ImageNode } from "./ImageNode";
+import { $isDecoratorBlockNode } from "@lexical/react/LexicalDecoratorBlockNode";
 
 interface Props {
   source: string;
@@ -31,7 +43,6 @@ export function ImageComponent({ source, nodeKey, editorConfig }: Props) {
   }
 
   function handleDelete(): boolean {
-    console.log("handleDelete", { isSelected });
     if (!isEditable) return false;
     if (!isSelected) return false;
 
@@ -46,16 +57,40 @@ export function ImageComponent({ source, nodeKey, editorConfig }: Props) {
   }
 
   function moveSelectionBefore() {
-    if (isSelected) {
-      console.log("moveSelectionBefore");
-      const node = $getNodeByKey(nodeKey);
-      if (node) {
+    if (!isSelected) return false;
+
+    const node = $getNodeByKey<ImageNode>(nodeKey);
+    if (!node) return false;
+
+    // take the previous sibling node
+    const previousSibling = node.getPreviousSibling();
+
+    // if it doesn't exist
+    if (!previousSibling) {
+      // create an empty text node and select it to show the caret there
+      editor.update(() => {
+        const previousNode = $createTextNode("");
+        node.insertBefore(previousNode);
+        previousNode.select();
+      });
+
+      return true;
+    } else {
+      if ($isTextNode(previousSibling) || $isElementNode(previousSibling)) {
         editor.update(() => {
-          node.selectStart();
+          previousSibling.select();
+        });
+        return true;
+      } else if ($isDecoratorNode(previousSibling)) {
+        editor.update(() => {
+          const selection = $createNodeSelection();
+          selection.add(previousSibling.getKey());
+          $setSelection(selection);
         });
         return true;
       }
     }
+
     return false;
   }
 
@@ -74,10 +109,10 @@ export function ImageComponent({ source, nodeKey, editorConfig }: Props) {
       editor.registerCommand(
         KEY_ARROW_LEFT_COMMAND,
         moveSelectionBefore,
-        COMMAND_PRIORITY_EDITOR
+        COMMAND_PRIORITY_LOW
       )
     );
-  }, [editor]);
+  }, [editor, moveSelectionBefore, handleDelete]);
 
   const theme = editorConfig.theme.customImage ?? {};
   const containerTheme = theme.container ?? {};

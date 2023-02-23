@@ -13,9 +13,7 @@ export function ImagePlugin() {
         "ImagePlugin: add the ImageNode in the editor configuration"
       );
     }
-  }, []);
 
-  useEffect(() => {
     return editor.registerCommand(
       PASTE_COMMAND,
       (event: ClipboardEvent, editor) => {
