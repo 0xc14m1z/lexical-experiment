@@ -70,7 +70,7 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@lexical/clipboard@0.8.0":
+"@lexical/clipboard@0.8.0", "@lexical/clipboard@^0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@lexical/clipboard/-/clipboard-0.8.0.tgz#f85502fb0e99b307d6e378aaf166c00c1ab168ca"
   integrity sha512-0bni7m8NOaQdSyHF24tJ1avrJLC/cTKWROUO6ZxELRVKDiTjs7CabSaRrK6toMFe52Ycg/wKFVLxdLTMElut0A==

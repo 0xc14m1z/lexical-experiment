@@ -34,10 +34,13 @@ export class StockMentionNode extends TextNode {
   }
 
   createDOM(config: EditorConfig): HTMLElement {
-    const dom = super.createDOM(config);
-    dom.className = config.theme[StockMentionNode.getType()];
-    dom.textContent = this.__text;
-    return dom;
+    const element = super.createDOM(config);
+    element.className = config.theme[StockMentionNode.getType()] ?? "";
+    element.setAttribute("data-type", StockMentionNode.getType());
+    element.setAttribute("data-ticker", this.__ticker);
+    element.setAttribute("data-name", this.__name);
+    element.textContent = this.__text;
+    return element;
   }
 
   exportJSON(): SerializedStockMentionNode {
