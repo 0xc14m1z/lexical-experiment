@@ -72,7 +72,7 @@ export function StateLogger({ editorConfig }: Props) {
             }
           );
         });
-        return true;
+        return false;
       },
       COMMAND_PRIORITY_CRITICAL
     );
@@ -155,14 +155,8 @@ function clipboardToJSON(
     const root = document.createElement("div");
     clipboardEditor.setRootElement(root);
 
-    const removeListener =
-      clipboardEditor.registerUpdateListener(storeClipboard);
-
-    function storeClipboard({ editorState }: { editorState: EditorState }) {
-      removeListener();
-      resolve(editorState.toJSON().root);
-    }
-
+    // simulate a paste in the temporary editor to trigger an update...
+    clipboardEditor.registerUpdateListener(storeClipboard);
     clipboardEditor.update(() => {
       $insertDataTransferForRichText(
         dataTransfer,
@@ -170,5 +164,10 @@ function clipboardToJSON(
         clipboardEditor
       );
     });
+
+    // ...and extract the updated state
+    function storeClipboard({ editorState }: { editorState: EditorState }) {
+      resolve(editorState.toJSON().root);
+    }
   });
 }

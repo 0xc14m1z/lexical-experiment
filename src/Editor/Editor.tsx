@@ -12,6 +12,7 @@ import { ImageNode, ImagePlugin } from "./ImagePlugin";
 
 import { HTMLExporter } from "./HTMLExporter";
 import { HTMLImporter } from "./HTMLImporter";
+import { RichClipboardPlugin } from "./RichClipboardPlugin";
 
 export function Editor() {
   const initialConfig: InitialConfigType = {
@@ -43,6 +44,7 @@ export function Editor() {
         />
       </div>
 
+      <RichClipboardPlugin />
       <StockMentionPlugin />
       <ImagePlugin />
 

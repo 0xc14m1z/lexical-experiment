@@ -13,4 +13,4 @@
 - [x] handle pasting of images from clipboard
 - [ ] can dragged images be handled?
 - [ ] how to read and move selection properly (useful when deleting/selecting react rendered nodes)
-- [ ] how to add metadata when copying to preserve nodes
+- [x] how to add metadata when copying to preserve nodes
