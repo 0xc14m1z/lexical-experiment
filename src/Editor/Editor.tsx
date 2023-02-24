@@ -5,6 +5,7 @@ import {
 import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { AutoLinkNode, LinkNode } from "@lexical/link";
 
 import { StateLogger } from "./StateLogger";
 import { StockMentionPlugin, StockMentionNode } from "./StockMentionPlugin";
@@ -13,12 +14,14 @@ import { ImageNode, ImagePlugin } from "./ImagePlugin";
 import { HTMLExporter } from "./HTMLExporter";
 import { HTMLImporter } from "./HTMLImporter";
 import { RichClipboardPlugin } from "./RichClipboardPlugin";
+import { YoutubePreviewPlugin } from "./YoutubePreviewPlugin";
+import { LinkPlugins } from "./LinkPlugins";
 
 export function Editor() {
   const initialConfig: InitialConfigType = {
     namespace: "LexicalEditor",
     onError: console.error,
-    nodes: [StockMentionNode, ImageNode],
+    nodes: [StockMentionNode, ImageNode, LinkNode, AutoLinkNode],
     theme: {
       stockMention: "inline-block bg-blue-200 px-1 rounded",
       customImage: {
@@ -42,11 +45,13 @@ export function Editor() {
           placeholder={<></>}
           ErrorBoundary={LexicalErrorBoundary}
         />
+        <YoutubePreviewPlugin />
       </div>
 
       <RichClipboardPlugin />
       <StockMentionPlugin />
       <ImagePlugin />
+      <LinkPlugins />
 
       <StateLogger editorConfig={initialConfig} />
       <HTMLExporter />
