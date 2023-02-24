@@ -1,11 +1,10 @@
 {
   "name": "lexical-experiment",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "parcel public/index.html",
-    "build": "parcel build"
+    "build": "parcel build public/index.html"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
