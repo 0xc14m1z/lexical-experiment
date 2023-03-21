@@ -10,7 +10,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { mergeRegister } from "@lexical/utils";
 import {
   $insertDataTransferForRichText,
-  copyToClipboard__EXPERIMENTAL,
+  copyToClipboard,
 } from "@lexical/clipboard";
 
 export function RichClipboardPlugin() {
@@ -21,7 +21,7 @@ export function RichClipboardPlugin() {
       editor.registerCommand(
         COPY_COMMAND,
         (event: ClipboardEvent) => {
-          copyToClipboard__EXPERIMENTAL(
+          copyToClipboard(
             editor,
             event instanceof ClipboardEvent ? event : null
           );
@@ -32,6 +32,7 @@ export function RichClipboardPlugin() {
       editor.registerCommand(
         PASTE_COMMAND,
         (event: ClipboardEvent) => {
+
           if (!event.clipboardData) return false;
 
           const selection = $getSelection();

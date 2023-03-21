@@ -16,7 +16,7 @@ import {
 import { mergeRegister } from "@lexical/utils";
 import {
   $insertDataTransferForRichText,
-  copyToClipboard__EXPERIMENTAL,
+  copyToClipboard,
 } from "@lexical/clipboard";
 import { InitialConfigType } from "@lexical/react/LexicalComposer";
 
@@ -57,7 +57,7 @@ export function StateLogger({ editorConfig }: Props) {
     return editor.registerCommand(
       COPY_COMMAND,
       (event: ClipboardEvent) => {
-        copyToClipboard__EXPERIMENTAL(
+        copyToClipboard(
           editor,
           event instanceof ClipboardEvent ? event : null
         ).then(() => {
