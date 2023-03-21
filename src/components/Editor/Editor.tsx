@@ -17,7 +17,7 @@ import { RichClipboardPlugin } from "./RichClipboardPlugin";
 import { YoutubePreviewPlugin } from "./YoutubePreviewPlugin";
 import { LinkPlugins } from "./LinkPlugins";
 
-export function Editor() {
+export default function Editor() {
   const initialConfig: InitialConfigType = {
     namespace: "LexicalEditor",
     onError: console.error,
