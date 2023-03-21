@@ -1,34 +1,70 @@
 import { useEffect } from "react";
 import classNames from "classnames";
 import {
-  $createNodeSelection,
   $createRangeSelection,
-  $createTextNode,
   $getNodeByKey,
   $getSelection,
-  $isDecoratorNode,
-  $isElementNode,
-  $isTextNode,
+  $isNodeSelection,
   $setSelection,
   COMMAND_PRIORITY_EDITOR,
-  COMMAND_PRIORITY_HIGH,
-  COMMAND_PRIORITY_LOW,
+  COMMAND_PRIORITY_NORMAL,
   EditorConfig,
   KEY_ARROW_LEFT_COMMAND,
+  KEY_ARROW_RIGHT_COMMAND,
   KEY_BACKSPACE_COMMAND,
   KEY_DELETE_COMMAND,
+  LexicalEditor,
 } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection";
 import { mergeRegister } from "@lexical/utils";
 import useLexicalEditable from "@lexical/react/useLexicalEditable";
-import { ImageNode } from "./ImageNode";
-import { $isDecoratorBlockNode } from "@lexical/react/LexicalDecoratorBlockNode";
 
 interface Props {
   source: string;
   nodeKey: string;
   editorConfig: EditorConfig;
+}
+
+function moveCursorBefore(
+  event: KeyboardEvent,
+  editor: LexicalEditor
+): boolean {
+  const selection = $getSelection();
+  if (!$isNodeSelection(selection)) return false; // not a node selection? keep going...
+
+  const [firstSelectedNode] = selection.getNodes();
+
+  const previousNode = firstSelectedNode.getPreviousSibling();
+  if (!previousNode) return false; // there are no nodes before? nothing i can do...
+
+  event.preventDefault();
+  editor.update(() => {
+    const newSelection = $createRangeSelection();
+    $setSelection(newSelection);
+    firstSelectedNode.selectPrevious();
+  });
+
+  return true;
+}
+
+function moveCursorAfter(event: KeyboardEvent, editor: LexicalEditor): boolean {
+  const selection = $getSelection();
+  if (!$isNodeSelection(selection)) return false; // not a node selection? keep going...
+
+  const [firstSelectedNode] = selection.getNodes();
+
+  const nextNode = firstSelectedNode.getNextSibling();
+  if (!nextNode) return false; // there are no nodes after? nothing i can do...
+
+  event.preventDefault();
+  editor.update(() => {
+    const newSelection = $createRangeSelection();
+    $setSelection(newSelection);
+    nextNode.selectPrevious();
+  });
+
+  return true;
 }
 
 export function ImageComponent({ source, nodeKey, editorConfig }: Props) {
@@ -42,15 +78,16 @@ export function ImageComponent({ source, nodeKey, editorConfig }: Props) {
     });
   }
 
-  function handleDelete(): boolean {
+  function handleDelete(event: KeyboardEvent): boolean {
     if (!isEditable) return false;
     if (!isSelected) return false;
 
     const node = $getNodeByKey(nodeKey);
     if (!node) return false;
 
+    event.preventDefault();
     editor.update(() => {
-      node.selectEnd();
+      node.selectNext();
       node.remove(true);
     });
     return true;
@@ -58,6 +95,16 @@ export function ImageComponent({ source, nodeKey, editorConfig }: Props) {
 
   useEffect(() => {
     return mergeRegister(
+      editor.registerCommand(
+        KEY_ARROW_LEFT_COMMAND,
+        moveCursorBefore,
+        COMMAND_PRIORITY_NORMAL
+      ),
+      editor.registerCommand(
+        KEY_ARROW_RIGHT_COMMAND,
+        moveCursorAfter,
+        COMMAND_PRIORITY_NORMAL
+      ),
       editor.registerCommand(
         KEY_DELETE_COMMAND,
         handleDelete,
