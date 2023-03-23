@@ -20,9 +20,8 @@ export function GPTGeneratedContentComponent({ nodeKey }: Props) {
   const handleEnter = useCallback(
     (event: KeyboardEvent) => {
       if (event.code === "Enter") {
-        flushSync(() => {
-          setIsLoading(true);
-        });
+        flushSync(() => setIsLoading(true));
+
         fetch(window.origin + "/api/gpt", {
           method: "POST",
           headers: {
@@ -33,9 +32,11 @@ export function GPTGeneratedContentComponent({ nodeKey }: Props) {
           .then((response) => response.text())
           .then((response) => {
             editor.update(() => {
-              const textNode = $createTextNode(response);
-              const node = $getNodeByKey(nodeKey);
-              node?.replace(textNode);
+              const textNodes = response.split("\n").map($createTextNode);
+              const node = $getNodeByKey(nodeKey)!;
+              textNodes.forEach((textNode) => node.insertBefore(textNode));
+              node.selectPrevious();
+              node.remove();
             });
           });
       }
@@ -43,21 +44,25 @@ export function GPTGeneratedContentComponent({ nodeKey }: Props) {
     [editor, nodeKey, prompt]
   );
 
+  // handle clipboard
+  // handle moving the selection before/after
+  // handle blur or typing ESC
+
   return (
-    <span className="border rounded inline-flex items-center focus-within:border-blue-400">
-      <span className="text-xs text-slate-400 px-2">
-        {isLoading ? "loading" : "prompt"}
-      </span>
+    <>
       <input
         type="text"
         value={prompt}
         size={prompt.length || 1}
         onChange={updatePrompt}
         onKeyDown={handleEnter}
-        className="outline-none rounded"
+        className="outline-none disabled:text-slate-600"
         autoFocus
         disabled={isLoading}
       />
-    </span>
+      {isLoading ? (
+        <span className="absolute top-0 left-0 w-full h-full bg-slate-200 rounded animate-pulse" />
+      ) : null}
+    </>
   );
 }

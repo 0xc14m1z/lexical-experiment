@@ -10,25 +10,32 @@ import {
 import { GPTGeneratedContentComponent } from "@/components/Editor/GPTContentGenerationPlugin/GPTGeneratedContentComponent";
 
 export class GPTGeneratedContentNode extends DecoratorNode<ReactNode> {
-  _prompt: string;
-
-  public setPrompt(newPrompt: string): void {
-    const self = this.getWritable();
-    self._prompt = newPrompt;
-  }
-
   public static getType(): "gpt-generated-content" {
     return "gpt-generated-content";
   }
 
   constructor(key?: NodeKey) {
     super(key);
-    this._prompt = "";
   }
 
   createDOM(_config: EditorConfig, _editor: LexicalEditor): HTMLSpanElement {
     const container = document.createElement("span");
-    container.className = "inline-flex leading-none";
+    container.classList.add(
+      "relative",
+      "py-1",
+      "-mt-1",
+      "inline-flex",
+      "leading-none",
+      "border",
+      "rounded",
+      "inline-flex",
+      "items-baseline",
+      "focus-within:border-slate-300",
+      "before:px-1",
+      "before:content-['prompt']",
+      "before:text-xs",
+      "before:text-slate-400"
+    );
     return container;
   }
 
@@ -47,7 +54,6 @@ export class GPTGeneratedContentNode extends DecoratorNode<ReactNode> {
   exportJSON(): any {
     return {
       type: GPTGeneratedContentNode.getType(),
-      prompt: this._prompt,
     };
   }
 
