@@ -16,12 +16,22 @@ import { HTMLImporter } from "./HTMLImporter";
 import { RichClipboardPlugin } from "./RichClipboardPlugin";
 import { YoutubePreviewPlugin } from "./YoutubePreviewPlugin";
 import { LinkPlugins } from "./LinkPlugins";
+import {
+  GPTContentGenerationPlugin,
+  GPTGeneratedContentNode,
+} from "./GPTContentGenerationPlugin";
 
 export default function Editor() {
   const initialConfig: InitialConfigType = {
     namespace: "LexicalEditor",
     onError: console.error,
-    nodes: [StockMentionNode, ImageNode, LinkNode, AutoLinkNode],
+    nodes: [
+      StockMentionNode,
+      ImageNode,
+      LinkNode,
+      AutoLinkNode,
+      GPTGeneratedContentNode,
+    ],
     theme: {
       stockMention: "inline-block bg-blue-200 px-1 rounded",
       customImage: {
@@ -52,6 +62,7 @@ export default function Editor() {
       <StockMentionPlugin />
       <ImagePlugin />
       <LinkPlugins />
+      <GPTContentGenerationPlugin />
 
       <StateLogger editorConfig={initialConfig} />
       <HTMLExporter />
